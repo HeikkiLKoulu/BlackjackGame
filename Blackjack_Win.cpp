@@ -99,9 +99,16 @@ bool blackjack(std::vector<int> target)
 // Checks if the game has ended
 
 winCase returnHowSomebodyWon() {
-    if (blackjack(player) == true && blackjack(dealer) == false) 
-    {
-        return playerBlackjack;
+    if (blackjack(player) == true) 
+    {   
+        drawCard(dealer, dealerPoints);
+        if (blackjack(dealer) == false)
+        {
+            return playerBlackjack;
+        } else 
+        {
+            return standoff;
+        }
     }
     if (blackjack(player) == false && blackjack(dealer) == true) 
     {
