@@ -124,7 +124,7 @@ winCase returnHowSomebodyWon()
     }
     else if (bust(player.points) == true) 
     {
-        return playerBust ;
+        return playerBust;
     }
     else if (bust(player.points) == false && dealer.points < player.points && dealer.points >= 17) 
     {
@@ -141,6 +141,34 @@ winCase returnHowSomebodyWon()
     return nothing;
 }
 
+// Returns if target has lost
+
+bool hasLost(std::string input)
+{
+    if (input == "player")
+    {
+        if (returnHowSomebodyWon() == playerBust || returnHowSomebodyWon() == dealerWin || returnHowSomebodyWon() == dealerBlackjack)
+        {
+            return true;
+        } 
+        else
+        {
+            return false;
+        }
+    }
+    else if (input == "dealer")
+    {
+        if (returnHowSomebodyWon() == dealerBust || returnHowSomebodyWon() == playerWin || returnHowSomebodyWon() == playerBlackjack)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    return false;
+}
 // Checks if Somebody has won
 
 bool somebodyHasWon()
@@ -242,17 +270,44 @@ void displayCard(std::vector<int> inputCard)
 
 void displayGame() 
 {
+    HANDLE hConsole;
+    hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    returnHowSomebodyWon();
+
+    if (hasLost("dealer") == false)
+    {
+        SetConsoleTextAttribute(hConsole, 15);
+    }
+    else 
+    {
+        SetConsoleTextAttribute(hConsole, 4);
+    }
+    
     std::cout << "-----------------------" << '\n' << dealer.points << '\n';
     displayCard(dealer.cards);
+    std::cout << '\n';
+    
+    if (hasLost("player") == false)
+    {
+        SetConsoleTextAttribute(hConsole, 15);
+    }
+    else 
+    {
+        SetConsoleTextAttribute(hConsole, 4);
+    }
     std::cout << "-----------------------" << '\n' << player.points << '\n';
     displayCard(player.cards);
-    std::cout << "-----------------------" << '\n';
+    std::cout << '\n';
 }
 
 // Prints game result
 
 void printResult(winCase result)
 {
+    HANDLE hConsole;
+    hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(hConsole, 15);
+
     switch (result)
     {
         case nothing:
