@@ -39,34 +39,34 @@ void drawCard(std::vector<int> &target, int &points){
 
     int cardNumber = card(rng);
 
-        switch (cardNumber) 
-        {
-            case 1:
-                target.push_back(1);
-                if (points <= 10) {
-                    points += 11;
-                } 
-                else {
-                    points += 1;
-                }
-                break;
-            case 11:
-                target.push_back(11);
-                points += 10;
-                break;
-            case 12:
-                target.push_back(12);
-                points += 10;
-                break;
-            case 13: 
-                target.push_back(13);
-                points += 10;
-                break;
-            default:
-                target.push_back(cardNumber);
-                points += cardNumber;
-                break;
-        };
+    switch (cardNumber) 
+    {
+        case 1:
+            target.push_back(1);
+            if (points <= 10) {
+                points += 11;
+            } 
+            else {
+                points += 1;
+            }
+            break;
+        case 11:
+            target.push_back(11);
+            points += 10;
+            break;
+        case 12:
+            target.push_back(12);
+            points += 10;
+            break;
+        case 13: 
+            target.push_back(13);
+            points += 10;
+            break;
+        default:
+            target.push_back(cardNumber);
+            points += cardNumber;
+            break;
+    };
 }
 
 // Checks if the player or dealer has busted, depending on the input
@@ -266,15 +266,18 @@ void displayCard(std::vector<int> inputCard)
     std::cout << cardP1 << '\n' << cardP2 << '\n' <<  cardP3 << '\n' << cardP4 << '\n' <<  cardP5 << '\n' << cardP6 << '\n';
 }
 
-// Prints the game
+// Changes the color of the console when needed
 
-void displayGame() 
+void changeConsoleColor(std::string input)
 {
     HANDLE hConsole;
     hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    returnHowSomebodyWon();
-
-    if (hasLost("dealer") == false)
+    if (input == "white")
+    {
+        SetConsoleTextAttribute(hConsole, 15);
+        return;
+    }
+    if (hasLost(input) == false)
     {
         SetConsoleTextAttribute(hConsole, 15);
     }
@@ -282,20 +285,23 @@ void displayGame()
     {
         SetConsoleTextAttribute(hConsole, 4);
     }
-    
-    std::cout << "-----------------------" << '\n' << dealer.points << '\n';
+}
+
+// Prints out the game
+
+void displayGame() 
+{
+    changeConsoleColor("white");
+    std::cout << "-----------------------\n";
+    changeConsoleColor("dealer");
+    std::cout << dealer.points << '\n';
     displayCard(dealer.cards);
     std::cout << '\n';
-    
-    if (hasLost("player") == false)
-    {
-        SetConsoleTextAttribute(hConsole, 15);
-    }
-    else 
-    {
-        SetConsoleTextAttribute(hConsole, 4);
-    }
-    std::cout << "-----------------------" << '\n' << player.points << '\n';
+
+    changeConsoleColor("white");
+    std::cout << "-----------------------\n";
+    changeConsoleColor("player");
+    std::cout << player.points << '\n';
     displayCard(player.cards);
     std::cout << '\n';
 }
@@ -313,25 +319,25 @@ void printResult(winCase result)
         case nothing:
             break;
         case playerWin:
-            std::cout << "-----------------------" << '\n' << "You won with " << player.points << " points!" << '\n' << "-----------------------" << '\n';
+            std::cout << "-----------------------\nYou won with " << player.points << " points!\n" << "-----------------------\n";
             break;
         case dealerWin:
-            std::cout << "-----------------------" << '\n' << "Dealer won with " << dealer.points << " points!" << '\n' << "-----------------------" << '\n';
+            std::cout << "-----------------------\nDealer won with " << dealer.points << " points!\n"<< "-----------------------\n";
             break;
         case playerBust:
-            std::cout << "-----------------------" << '\n' << "Player went bust!" << '\n' << "-----------------------" << '\n';
+            std::cout << "-----------------------\nPlayer went bust!\n-----------------------\n" ;
             break;
         case dealerBust:
-            std::cout << "-----------------------" << '\n' << "Dealer went bust!" << '\n' << "-----------------------" << '\n';
+            std::cout << "-----------------------\nDealer went bust!\n-----------------------\n";
             break;
         case playerBlackjack:
-            std::cout << "-----------------------" << '\n' << "Player won with blackjack!" << '\n' << "-----------------------" << '\n';
+            std::cout << "-----------------------\nPlayer won with blackjack!\n-----------------------\n";
             break;
         case dealerBlackjack:
-            std::cout << "-----------------------" << '\n' << "Dealer won with blackjack!" << '\n' << "-----------------------" << '\n';
+            std::cout << "-----------------------\nDealer won with blackjack!\n-----------------------\n";
             break;
         case standoff:
-            std::cout << "-----------------------" << '\n' << "Standoff!" << '\n' << "-----------------------" << '\n';
+            std::cout << "-----------------------\nStandoff!\n-----------------------\n";
             break;
         default:
             break;
@@ -405,7 +411,6 @@ void dealerDrawCardsLoop()
     dealer.cards.erase(std::next(dealer.cards.begin()));
 
     int i = 0;
-
     while (i <= 16 && somebodyHasWon() == false)
     {
         drawCard(dealer.cards, dealer.points);
@@ -424,9 +429,10 @@ void endgame()
     resetGame();
 }
 
+// The games loop
+
 int main () 
 {
-
     while (true)
     {
         setup();
